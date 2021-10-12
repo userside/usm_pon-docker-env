@@ -1,0 +1,9 @@
+services:
+  usm_pon:
+    build:
+      context: ${USERSIDE_BASE_DIR}/usm_pon
+    volumes:
+      - ${USERSIDE_BASE_DIR}/usm_pon/module:/app
+      - ${USERSIDE_BASE_DIR}/usm_pon/log:/var/log/userside/usm_pon/logs
+    networks:
+      - internal

@@ -1,0 +1,7 @@
+requires 'Time::Local';
+requires 'Socket';
+requires 'FindBin';
+requires 'URI';
+requires 'LWP::UserAgent';
+requires 'JSON';
+requires 'Data::Dumper';
