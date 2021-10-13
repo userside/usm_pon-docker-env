@@ -12,6 +12,7 @@ This environment provides the feature of running the usm_pon module inside the D
         ├── usm_pon
         │    ├── log
         │    ├── module
+        │    │    └── usm_pon.conf
         │    ├── cpanfile
         │    └── Dockerfile
         ├── docker-compose.yml
@@ -20,7 +21,7 @@ This environment provides the feature of running the usm_pon module inside the D
         └── README.md
   ```
 3. From `usm_pon-docker-env/docker-composer.yml` copy the whole service config `usm_pon:...` to service block into your docker-compose.yml. **Pay attention to the formatting!** The indents in the yaml file are very important.
-  ```
+  ```yaml
   services:
     postgres:
       ...
@@ -33,16 +34,21 @@ This environment provides the feature of running the usm_pon module inside the D
     usm_pon:
       build:
         context: ${USERSIDE_BASE_DIR}/usm_pon
+      environments:
+        USERSIDE_API_KEY: 'api-secret-key'
       volumes:
         - ${USERSIDE_BASE_DIR}/usm_pon/module:/app
-        - ${USERSIDE_BASE_DIR}/usm_pon/log:/var/log/userside/usm_pon/logs
+        - ${USERSIDE_BASE_DIR}/usm_pon/log:/var/log/usm_pon
+        - /etc/localtime:/etc/localtime:ro
+        - /etc/timezone:/etc/timezone:ro
       networks:
         - internal
 
   volumes:
     ...
   ```
-4. Download **usm_pon** module from https://my.userside.eu/ and extract the module files to the subdirectory `usm_pon/module` folder. It should turn out as follows:
+4. Setup environments.
+5. Download **usm_pon** module from https://my.userside.eu/, extract and copy **only one file** `usm_pon.pl` to the subdirectory `usm_pon/module` folder. It should turn out as follows:
   ```
   /docker
    └── userside
@@ -51,23 +57,22 @@ This environment provides the feature of running the usm_pon module inside the D
         ├── usm_pon
         │    ├── log
         │    ├── module
-        │    │    ├── usm_pon.conf-example
+        │    │    ├── usm_pon.conf
         │    │    └── usm_pon.pl
         │    ├── cpanfile
         │    └── Dockerfile
   ```
-5. Rename `usm_pon.conf-example` to `usm_pon.conf` and setup parameters `$usUrl` and `$usApiKey`.
-6. **Do not change** parameters `$logsPath` and `$isSilence`!
-7. Go to folder `/docker/userside` then build docker-image for service usm_pon
-  ```
+
+6. Go to folder `/docker/userside` then build docker-image for service usm_pon. It can take a long time, but it only needs to be done once.
+  ```bash
   sudo docker-compose build usm_pon
   ```
-8. Make a test run:
-  ```
+7. Make a test run:
+  ```bash
   sudo docker-compose run --rm usm_pon
   ```
 
-9. Add a line to your /etc/cron.d/userside similar to the others. For example:
+8. Add a line to your /etc/cron.d/userside similar to the others. For example:
   ```
   */30 * * * *    root    /usr/local/bin/docker-compose .... run --rm usm_pon > /dev/null
   ```

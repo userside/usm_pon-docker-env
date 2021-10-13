@@ -2,8 +2,12 @@ services:
   usm_pon:
     build:
       context: ${USERSIDE_BASE_DIR}/usm_pon
+    environments:
+      USERSIDE_API_KEY: 'api-secret-key'
     volumes:
       - ${USERSIDE_BASE_DIR}/usm_pon/module:/app
-      - ${USERSIDE_BASE_DIR}/usm_pon/log:/var/log/userside/usm_pon/logs
+      - ${USERSIDE_BASE_DIR}/usm_pon/log:/var/log/usm_pon
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     networks:
       - internal
